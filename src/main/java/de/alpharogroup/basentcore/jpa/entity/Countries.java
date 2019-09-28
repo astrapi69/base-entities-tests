@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
 
 
 /**
@@ -18,10 +20,14 @@ import lombok.Setter;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter @Setter
 @NoArgsConstructor
-@SequenceGenerator(name =
-	BaseSequenceEntity.GENERIC_GENERATOR_NAME, sequenceName =
-	"seq_"
-		+ Countries.TABLE_NAME, allocationSize = 1)
+@GenericGenerator(
+	name = BaseSequenceEntity.GENERIC_GENERATOR_NAME,
+	strategy = "de.alpharogroup.basentcore.jpa.generator.IdentifiableSequenceStyleGenerator",
+	parameters = @org.hibernate.annotations.Parameter(
+		name = SequenceStyleGenerator.SEQUENCE_PARAM,
+		value = Countries.TABLE_NAME + SequenceStyleGenerator.DEF_SEQUENCE_SUFFIX
+	)
+)
 public class Countries
 	extends UniqueNameEntity<Integer> implements Cloneable
 {
